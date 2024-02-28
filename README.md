@@ -1,0 +1,1 @@
+This project aims to create a chess bot for my 140 hour challenge Semester 4 at Fontys. Its a way for me to explore and reaserch into algorithms, chess programming tequiques to learn about optamisation and the math that goes into giving a computer search and decision making power.
