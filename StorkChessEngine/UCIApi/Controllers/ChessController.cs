@@ -14,30 +14,48 @@ namespace UCIApi.Controllers
             _chessEngine = chessEngine;
         }
 
-        [HttpPost("uci")]
-        public IActionResult uci()
+        [HttpPost("Command")]
+        public IActionResult CommandRecieved(string message)
         {
-            _chessEngine.NewGame();
-            return Ok("id name Stork\nid author Milan\nuciok");
+            string response = ProcessCommand(message); 
+            return Ok(response);
         }
 
-        [HttpPost("isready")]
-        public IActionResult IsReady()
+        private string ProcessCommand(string message)
         {
-            return Ok("readyok");
-        }
+            string commandType = message.Trim();
 
-        [HttpPost("position")]
-        public IActionResult Move()
-        {
-            string bestMove = "e2e4";
-            return Ok($"bestmove {bestMove}");
-        }
+            switch (commandType)
+            {
+                //"id name Stork\nid author Milan\nuciok" needs to be done somewhere but also maybe not because its going over lichess in the end?
 
-        [HttpPost("newgame")]
-        public IActionResult NewGame()
-        {
-            return Ok("readyok");
+                case "uci":
+                    //Respond "uciok"
+                    break;
+                case "isready":
+                    //Respond "readyok"
+                    break;
+                case "position":
+                    //Figure out what board state is being provided
+                    //Figure out which moves have been played
+                    //Calculate next move
+                    //Respond to the frontend
+                    break;
+                case "go":
+                    //Figure out how much time is remaining for the bot
+                    break;
+                case "stop":
+                    //Stop thinking
+                    break;
+                case "quit":
+                    //QuidGame
+                    break;
+                default: 
+                    //Log somthing here since clearly somthing went wrong.
+                    break;
+
+            }
+            return "Not implementd";
         }
     }
 }
