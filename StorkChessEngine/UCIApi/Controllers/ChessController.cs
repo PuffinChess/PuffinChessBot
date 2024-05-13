@@ -15,17 +15,28 @@ namespace UCIApi.Controllers
         }
 
         [HttpPost("uci")]
-        public IActionResult Uci()
+        public IActionResult uci()
         {
             _chessEngine.NewGame();
             return Ok("id name Stork\nid author Milan\nuciok");
-            //Need to also sebnd a "uciok" command back.
         }
 
         [HttpPost("isready")]
         public IActionResult IsReady()
         {
-            _chessEngine.NewGame();
+            return Ok("readyok");
+        }
+
+        [HttpPost("position")]
+        public IActionResult Move()
+        {
+            string bestMove = "e2e4";
+            return Ok($"bestmove {bestMove}");
+        }
+
+        [HttpPost("newgame")]
+        public IActionResult NewGame()
+        {
             return Ok("readyok");
         }
     }
