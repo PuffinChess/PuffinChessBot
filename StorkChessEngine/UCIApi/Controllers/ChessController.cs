@@ -15,10 +15,14 @@ namespace UCIApi.Controllers
         }
 
         [HttpPost("Command")]
-        public IActionResult CommandRecieved(string message)
+        public IActionResult CommandRecieved()
         {
-            string response = ProcessCommand(message); 
-            return Ok(response);
+            using (StreamReader reader = new StreamReader(Request.Body))
+            {
+                string response = ProcessCommand(reader.ReadToEnd()); 
+                return Ok(response);
+            }
+
         }
 
         private string ProcessCommand(string message)
