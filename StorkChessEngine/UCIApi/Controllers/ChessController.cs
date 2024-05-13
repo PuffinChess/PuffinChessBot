@@ -14,11 +14,19 @@ namespace UCIApi.Controllers
             _chessEngine = chessEngine;
         }
 
-        [HttpPost("start-game")]
-        public IActionResult StartGame()
+        [HttpPost("uci")]
+        public IActionResult Uci()
         {
-            _chessEngine.NewGame(); 
-            return Ok
+            _chessEngine.NewGame();
+            return Ok("id name Stork\nid author Milan\nuciok");
+            //Need to also sebnd a "uciok" command back.
+        }
+
+        [HttpPost("isready")]
+        public IActionResult IsReady()
+        {
+            _chessEngine.NewGame();
+            return Ok("readyok");
         }
     }
 }
