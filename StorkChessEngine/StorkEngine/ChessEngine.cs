@@ -11,7 +11,9 @@ namespace StorkEngine
 
         public string ReturnBestMove(string message)
         {
-            return "bestmove e2e4";
+            Console.WriteLine(message);
+            string bestMove = Console.ReadLine();
+            return $"bestmove {bestMove}";
         }
     }
 }

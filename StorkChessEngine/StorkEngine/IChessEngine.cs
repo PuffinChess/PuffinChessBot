@@ -8,7 +8,6 @@ namespace StorkEngine
 {
     public interface IChessEngine
     {
-
         public string ReturnBestMove(string message);
     }
 }
