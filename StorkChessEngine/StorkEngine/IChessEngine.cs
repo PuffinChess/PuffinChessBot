@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace StorkEngine
 {
-    public class ChessEngine : IChessEngine
+    public interface IChessEngine
     {
 
-        public string ReturnBestMove(string message)
-        {
-            return "bestmove e2e4";
-        }
+        public string ReturnBestMove(string message);
     }
 }
