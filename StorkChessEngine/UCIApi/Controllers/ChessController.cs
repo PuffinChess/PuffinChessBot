@@ -4,7 +4,7 @@ using StorkEngine;
 namespace UCIApi.Controllers
 {
     [ApiController]
-    [Route("api/chess")]
+    [Route("api/[controller]")]
     public class ChessController : Controller
     {
         private readonly IChessEngine _chessEngine;
@@ -14,8 +14,8 @@ namespace UCIApi.Controllers
             _chessEngine = chessEngine;
         }
 
-        [HttpPost("Command")]
-        public IActionResult PostCommandRecieved(string message)
+        [HttpPost]
+        public ActionResult PostCommandRecieved(string message)
         {
 
             if (null == message || "" == message)
@@ -61,7 +61,6 @@ namespace UCIApi.Controllers
                     //QuidGame
                     break;
                 default:
-                    return null;
                     //Log somthing here since clearly somthing went wrong.
                     break;
 
