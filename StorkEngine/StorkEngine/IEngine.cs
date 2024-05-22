@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace StorkEngine
 {
-    public interface IChessEngine
+    public interface IEngine
     {
-        public string ReturnBestMove(string message);
+        public string BestMove(string currentPosition);
     }
 }

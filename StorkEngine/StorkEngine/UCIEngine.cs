@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace StorkEngine
 {
-    public class ChessEngine : IChessEngine
+    public class UCIEngine : IEngine
     {
-
-        public string ReturnBestMove(string message)
+        public string BestMove(string position)
         {
-            Console.WriteLine(message);
+            Console.WriteLine(position);
             string bestMove = Console.ReadLine()!;
             return $"bestmove {bestMove}";
         }
