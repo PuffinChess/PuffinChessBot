@@ -44,7 +44,7 @@ namespace StorkEngineApi.Controllers
 
         private string ProcessCommand(string message)
         {
-            string commandType = message.Trim();
+            string commandType = message.Split()[0];
             string response = "";
             switch (commandType)
             {
