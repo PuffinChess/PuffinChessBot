@@ -1,21 +1,23 @@
 using StorkEngine;
+using StorkEngineApi.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "MyPolicy",
-                policy =>
-                {
-                    policy.WithOrigins("http://localhost:3030")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowAnyOrigin();
-                });
+    options.AddPolicy(MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3030")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowCredentials();
+                      });
 });
+builder.Services.AddSignalR();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -33,7 +35,8 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-app.UseCors("MyPolicy");
+app.UseCors("_myAllowSpecificOrigins");
+app.MapHub<GameHub>("/gameHub");
 
 app.MapControllers();
 

@@ -7,42 +7,53 @@ namespace StorkEngineApi.Hubs
 {
     public class GameHub : Hub
     {
-        private static ConcurrentDictionary<string, string> waitingUsers = new ConcurrentDictionary<string, string>();
+
+        private static ConcurrentQueue<string> waitingUsers = new ConcurrentQueue<string>();
+        private static ConcurrentDictionary<string, string> pairedUsers = new ConcurrentDictionary<string, string>();
 
         public override async Task OnConnectedAsync()
         {
-            waitingUsers.TryAdd(Context.ConnectionId, null);
+            waitingUsers.Enqueue(Context.ConnectionId);
             await TryPairUsers();
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            waitingUsers.TryRemove(Context.ConnectionId, out _);
+            if (pairedUsers.TryRemove(Context.ConnectionId, out var pairedUser))
+            {
+                pairedUsers.TryRemove(pairedUser, out _);
+                await Clients.Client(pairedUser).SendAsync("PairedUserDisconnected");
+            }
+            else
+            {
+                waitingUsers = new ConcurrentQueue<string>(waitingUsers.Except(new[] { Context.ConnectionId }));
+            }
+
             await base.OnDisconnectedAsync(exception);
         }
 
         private async Task TryPairUsers()
         {
-            var availableUsers = waitingUsers.Keys.ToArray();
-
-            if (availableUsers.Length >= 2)
+            if (waitingUsers.Count >= 2)
             {
-                var user1 = availableUsers[0];
-                var user2 = availableUsers[1];
+                if (waitingUsers.TryDequeue(out var user1) && waitingUsers.TryDequeue(out var user2))
+                {
+                    pairedUsers.TryAdd(user1, user2);
+                    pairedUsers.TryAdd(user2, user1);
 
-                waitingUsers.TryRemove(user1, out _);
-                waitingUsers.TryRemove(user2, out _);
-
-                await Clients.Client(user1).SendAsync("Paired", user2);
-                await Clients.Client(user2).SendAsync("Paired", user1);
-
+                    await Clients.Client(user1).SendAsync("Paired", "white");
+                    await Clients.Client(user2).SendAsync("Paired", "black");
+                }
             }
         }
 
-        public async Task PerformMove(string targetConnectionId, string move)
+        public async Task SendMove(string move)
         {
-            await Clients.Client(targetConnectionId).SendAsync("RecievedMessage", Context.ConnectionId, move);
+            if (pairedUsers.TryGetValue(Context.ConnectionId, out var pairedUser))
+            {
+                await Clients.Client(pairedUser).SendAsync("ReceiveMove", move);
+            }
         }
     }
 }
