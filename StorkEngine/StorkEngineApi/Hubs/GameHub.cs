@@ -42,18 +42,21 @@ namespace StorkEngineApi.Hubs
                     pairedUsers.TryAdd(user1, user2);
                     pairedUsers.TryAdd(user2, user1);
 
-                    await Clients.Client(user1).SendAsync("Paired", "white");
-                    await Clients.Client(user2).SendAsync("Paired", "black");
+                    // Send "white" to one user and "black" to the other
+
+                    // Inform each user of their pairing
+                    await Clients.Client(user1).SendAsync("Paired", user2);
+                    await Clients.Client(user2).SendAsync("Paired", user1);
+
+                    await Clients.Client(user1).SendAsync("ReceiveMessage", Context.ConnectionId, "white");
+                    await Clients.Client(user2).SendAsync("ReceiveMessage", Context.ConnectionId, "black");
                 }
             }
         }
 
-        public async Task SendMove(string move)
+            public async Task SendMessage(string targetConnectionId, string message)
         {
-            if (pairedUsers.TryGetValue(Context.ConnectionId, out var pairedUser))
-            {
-                await Clients.Client(pairedUser).SendAsync("ReceiveMove", move);
-            }
+            await Clients.Client(targetConnectionId).SendAsync("ReceiveMessage", Context.ConnectionId, message);
         }
     }
 }
